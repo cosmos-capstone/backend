@@ -21,7 +21,7 @@ class Transaction(models.Model):
 
     transaction_date = models.DateTimeField(default=datetime(1970, 1, 1))
     transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPE_CHOICES, default='deposit')
-    asset_category = models.CharField(max_length=50, choices=ASSET_CATEGORY_CHOICES, default='korean_stock')
+    asset_category = models.CharField(max_length=50, choices=ASSET_CATEGORY_CHOICES, blank=True, null=True)
     stock_code = models.CharField(max_length=20, blank=True, null=True)
     stock_name = models.CharField(max_length=50, blank=True, null=True)
     bond_name = models.CharField(max_length=50, blank=True, null=True)
