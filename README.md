@@ -14,3 +14,4 @@ python manage.py migrate
 source venv/bin/activate
 python manage.py runserver
 ```
+And check here: http://127.0.0.1:8000/dumpdata1
