@@ -4,5 +4,7 @@ from django.db import connections
 
 
 def stock(request):
+    symbol = request.GET.get('symbol')
     market_data_connection = connections['market_data']
-    return JsonResponse({"message": "success"})
+
+    return JsonResponse({"message": symbol})
