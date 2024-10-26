@@ -7,4 +7,4 @@ class StockPrice(models.Model):
     currency = models.CharField(max_length=10)
 
     def __str__(self):
-        return f"{self.symbol} on {self.date}: {self.close_price}"
+        return f"{self.symbol} on {self.datetime}: {self.close_price}"
