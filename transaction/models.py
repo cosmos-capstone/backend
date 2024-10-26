@@ -19,7 +19,7 @@ class Transaction(models.Model):
         ('deposit', 'Deposit'),
     ]
 
-    transaction_date = models.DateTimeField(default=datetime(1970, 1, 1))
+    transaction_date = models.DateTimeField()
     transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPE_CHOICES)
     asset_category = models.CharField(max_length=50, choices=ASSET_CATEGORY_CHOICES)
     stock_code = models.CharField(max_length=20)
