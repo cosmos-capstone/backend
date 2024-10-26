@@ -19,7 +19,7 @@ class Stock(View):
                 close_price=close_price,
                 currency=currency
             )
-            stock_price.save(using="market_data")
+            stock_price.save()
 
         history_list = history.values.tolist()
         return JsonResponse({"name": stock.info['longName'], "message": history_list})
