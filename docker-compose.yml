@@ -4,7 +4,8 @@ services:
         ports:
             - 8000:8000
         environment:
-            - DJANGO_DEBUG_MODE=False
+            - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+            - DJANGO_DEBUG_MODE=${DJANGO_DEBUG_MODE}
         volumes:
             - ./db.sqlite3:/app/db.sqlite3
         restart: always
