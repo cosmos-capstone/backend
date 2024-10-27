@@ -1,6 +1,8 @@
 import yfinance as yf
+from datetime import timedelta
 
 from django.db import models
+from django.utils import timezone
 
 class StockPrice(models.Model):
     symbol = models.CharField(max_length=10)
@@ -14,17 +16,18 @@ class StockPrice(models.Model):
     @staticmethod
     def get_stock_prices(symbol):
         stock = yf.Ticker(symbol)
-        # history = stock.history(period="max")
-        # currency = stock.info['currency']
 
-        # for datetime, close_price in history['Close'].items():
-        #     stock_price = StockPrice(
-        #         symbol=symbol,
-        #         datetime=datetime.to_pydatetime(),
-        #         close_price=close_price,
-        #         currency=currency
-        #     )
-        #     stock_price.save()
+        latest_db_entry = StockPrice.objects.filter(symbol=symbol).order_by('-datetime').first()
+
+        if latest_db_entry:
+            last_db_date = latest_db_entry.datetime.date()
+            today_date = timezone.now().date()
+
+            if last_db_date < today_date:
+                start_date = last_db_date + timedelta(days=1)
+                StockPrice.fetch_and_save_stock_data(stock, symbol, start=start_date)
+        else:
+            StockPrice.fetch_and_save_stock_data(stock, symbol, period="max")
 
         name = stock.info['longName']
         queryset = StockPrice.objects.filter(symbol=symbol).order_by('datetime')
@@ -32,3 +35,26 @@ class StockPrice(models.Model):
         data = list(queryset.values('datetime', 'close_price'))
 
         return name, currency, data
+
+    @staticmethod
+    def fetch_and_save_stock_data(stock, symbol, start=None, period=None):
+        if start:
+            history = stock.history(start=start)
+        else:
+            history = stock.history(period=period)
+
+        if history.empty:
+            return
+
+        currency = stock.info.get('currency')
+
+        stock_prices = [
+            StockPrice(
+                symbol=symbol,
+                datetime=dt.to_pydatetime(),
+                close_price=row['Close'],
+                currency=currency
+            ) for dt, row in history.iterrows()
+        ]
+        StockPrice.objects.bulk_create(stock_prices)
+        
