@@ -24,8 +24,7 @@ class StockPrice(models.Model):
             today_date = timezone.now().date()
 
             if last_db_date < today_date:
-                start_date = last_db_date + timedelta(days=1)
-                StockPrice.fetch_and_save_stock_data(stock, symbol, start=start_date)
+                StockPrice.fetch_and_save_stock_data(stock, symbol, start=last_db_date)
         else:
             StockPrice.fetch_and_save_stock_data(stock, symbol, period="max")
 
@@ -46,6 +45,16 @@ class StockPrice(models.Model):
         if history.empty:
             return
 
+        history_datetimes = [dt.to_pydatetime() for dt in history.index]
+
+        overlapping_entries = StockPrice.objects.filter(
+            symbol=symbol,
+            datetime__in=history_datetimes
+        )
+
+        if overlapping_entries.exists():
+            overlapping_entries.delete()
+
         currency = stock.info.get('currency')
 
         stock_prices = [
@@ -56,5 +65,6 @@ class StockPrice(models.Model):
                 currency=currency
             ) for dt, row in history.iterrows()
         ]
+
         StockPrice.objects.bulk_create(stock_prices)
         
