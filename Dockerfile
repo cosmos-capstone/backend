@@ -12,4 +12,4 @@ RUN pip install -r requirements.txt
 COPY . /app/
 
 # Run the Django development server
-CMD ["gunicorn", "mysite.wsgi"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "mysite.wsgi"]
