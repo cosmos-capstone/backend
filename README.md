@@ -14,6 +14,6 @@ python manage.py migrate
 ## Run
 ```sh
 source venv/bin/activate
-DJANGO_PRODUCTION_LEVEL=True python manage.py runserver
+DJANGO_DEBUG_MODE=True python manage.py runserver
 ```
 And check here: http://127.0.0.1:8000/transaction/dumpdata1
