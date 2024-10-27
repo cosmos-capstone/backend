@@ -12,13 +12,13 @@ class Stock(APIView):
             OpenApiParameter(
                 name="symbol",
                 type=str,
-                location=OpenApiParameter.QUERY,
+                location=OpenApiParameter.PATH,
                 required=True,
                 description="The stock symbol for which to retrieve prices (e.g., 'AAPL' for Apple Inc. and '005930.KS' for Samsung Electorinics)"
             )
         ],
     )
     def get(self, request, *args, **kwargs):
-        symbol = request.GET.get('symbol')
+        symbol = kwargs.get('symbol')
         name, currency, data = StockPrice.get_stock_prices(symbol)
         return JsonResponse({"name": name, "currency": currency, "data": data})
