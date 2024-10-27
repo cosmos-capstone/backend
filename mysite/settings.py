@@ -20,7 +20,7 @@ if DEBUG_MODE == 'True':
 
 ALLOWED_HOSTS = []
 if DEBUG:
-    ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+    ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'cosmos-backend.cho0h5.org']
 else:
     ALLOWED_HOSTS = ['cosmos-backend.cho0h5.org']
 
