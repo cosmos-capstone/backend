@@ -3,6 +3,8 @@ services:
         image: ghcr.io/cosmos-capstone/backend:1730018998
         ports:
             - 8000:8000
+        environment:
+            - DJANGO_DEBUG_MODE=False
         volumes:
             - ./db.sqlite3:/app/db.sqlite3
         restart: always
