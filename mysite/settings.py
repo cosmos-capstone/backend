@@ -14,9 +14,16 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 # SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-l0njftdkiayb_am6n4!&i)m%0$#414*=aci9_(&0ckge7kf2h4')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_PRODUCTION_LEVEL', True)
+DEBUG_MODE = os.environ.get('DJANGO_PRODUCTION_LEVEL', False)
+DEBUG = False
+if DEBUG_MODE == 'True':
+    DEBUG = True
 
 ALLOWED_HOSTS = []
+if DEBUG:
+    ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+else:
+    ALLOWED_HOSTS = ['cosmos-backend.cho0h5.org']
 
 
 # Application definition
