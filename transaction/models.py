@@ -20,13 +20,22 @@ class Transaction(models.Model):
         ('savings', 'Savings Account'),
     ]
 
+    # Common fields
     transaction_date = models.DateTimeField()
     transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPE_CHOICES)
     asset_category = models.CharField(max_length=50, choices=ASSET_CATEGORY_CHOICES)
+
+    # For stock
     stock_code = models.CharField(max_length=20)
     stock_name = models.CharField(max_length=50)
+
+    # For bond
     bond_name = models.CharField(max_length=50)
+
+    # For fund
     fund_name = models.CharField(max_length=50)
+
+    # Common fields
     quantity = models.IntegerField(default=0)
     transaction_amount = models.DecimalField(max_digits=20, decimal_places=2, default=0)
 
