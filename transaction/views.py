@@ -29,7 +29,7 @@ def dumpdata1(request):
     responses={200: 'Success response'},
 )
 @api_view(['POST'])
-def submit_transactions(request):
+def submit(request):
     if request.method != "POST":
         return JsonResponse({"error": "Invalid request method."}, status=405)
 
