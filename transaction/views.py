@@ -22,3 +22,53 @@ def dumpdata1(request):
         {"id": 9, "transaction_date": "2023-12-13T15:00:00Z", "transaction_type": "buy", "asset_category": "korean_stock", "symbol": "379800.KS", "stock_name": "KODEX \ubbf8\uad6d S&P500TR", "bond_name": None, "fund_name": None, "quantity": 20, "transaction_amount": "276400.00"},
         {"id": 10, "transaction_date": "2024-02-07T15:00:00Z", "transaction_type": "buy", "asset_category": "korean_stock", "symbol": "379810.KS", "stock_name": "KODEX \ubbf8\uad6d\ub098\uc2a4\ub2e5 100TR", "bond_name": None, "fund_name": None, "quantity": 20, "transaction_amount": "313700.00"}]})
     # return JsonResponse({'message': 'success', 'data': list(Transaction.objects.values())})
+
+@extend_schema(
+    summary="Post transaction data",
+    description="This endpoint for adding transactions",
+    responses={200: 'Success response'},
+)
+@api_view(['POST'])
+def submit_transactions(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "Invalid request method."}, status=405)
+
+    try:
+        data = json.loads(request.body)
+        new_transactions = []
+        
+        for item in data:
+            transaction = Transaction(
+                transaction_date=datetime.strptime(item["transaction_date"], "%Y-%m-%d"),
+                transaction_type=item["transaction_type"],
+                asset_category=item["asset_category"],
+                stock_code=item.get("stock_code", ""),
+                stock_name=item.get("stock_name", ""),
+                bond_name=item.get("bond_name", ""),
+                fund_name=item.get("fund_name", ""),
+                quantity=item["quantity"],
+                transaction_amount=item["transaction_amount"],
+            )
+            transaction.save()
+            new_transactions.append(transaction)
+
+        # Serialize the saved transactions
+        response_data = [
+            {
+                "transaction_date": transaction.transaction_date.strftime("%Y-%m-%d"),
+                "transaction_type": transaction.transaction_type,
+                "asset_category": transaction.asset_category,
+                "stock_code": transaction.stock_code,
+                "stock_name": transaction.stock_name,
+                "bond_name": transaction.bond_name,
+                "fund_name": transaction.fund_name,
+                "quantity": transaction.quantity,
+                "transaction_amount": str(transaction.transaction_amount),
+            }
+            for transaction in new_transactions
+        ]
+
+        return JsonResponse(response_data, safe=False, status=201)
+
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=400)
