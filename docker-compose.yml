@@ -1,6 +1,7 @@
 services:
     cosmos-backend:
-        image: ghcr.io/cosmos-capstone/backend:latest
+        build: .
+        image: cosmos-backend
         ports:
             - 8000:8000
         environment:
