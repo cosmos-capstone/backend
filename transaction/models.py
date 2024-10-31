@@ -14,6 +14,7 @@ class Transaction(models.Model):
         ('american_stock', 'American Stock'),
         ('korean_bond', 'Korean Bond'),
         ('american_bond', 'American Bond'),
+        ('fund', 'Fund'),
         ('commodity', 'Commodity'),
         ('gold', 'Gold'),
         ('deposit', 'Deposit'),
