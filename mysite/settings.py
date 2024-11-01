@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'transaction.apps.TransactionConfig',
     'market_data.apps.MarketDataConfig',
+    'stock_prediction.apps.StockPredictionConfig',
     'drf_spectacular',
     'corsheaders',
 ]
