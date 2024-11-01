@@ -41,6 +41,12 @@ def submit(request):
         new_transactions = []
         
         for item in data:
+            if not item.get("asset_name"):  # asset_name이 비어 있는지 확인
+                raise Exception("Asset name이 비어있습니다.")
+            if item.get("quantity") == 0:
+                raise Exception("Quantity가 0이 될 수 없습니다.")
+            if float(item.get("transaction_amount", 0)) == 0:
+                raise Exception("Transaction amount가 0이 될 수 없습니다.")
             transaction = Transaction(
                 transaction_date=datetime.strptime(item["transaction_date"], "%Y-%m-%dT%H:%M").replace(tzinfo=pytz.timezone("Asia/Seoul")),
                 transaction_type=item["transaction_type"],
@@ -68,6 +74,10 @@ def submit(request):
 
         return JsonResponse(response_data, safe=False, status=201)
 
+    except ValueError as e:
+        print(type(e), e)
+        return JsonResponse({"error": "날짜가 올바르지 않습니다."}, status=400)
+
     except Exception as e:
-        print(e)
+        print(type(e), e)
         return JsonResponse({"error": str(e)}, status=400)
