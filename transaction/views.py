@@ -1,4 +1,6 @@
-import json, datetime
+import json
+import pytz
+from datetime import datetime
 
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import api_view
@@ -40,11 +42,11 @@ def submit(request):
         
         for item in data:
             transaction = Transaction(
-                transaction_date=datetime.strptime(item["transaction_date"], "%Y-%m-%d"),
+                transaction_date=datetime.strptime(item["transaction_date"], "%Y-%m-%dT%H:%M").replace(tzinfo=pytz.timezone("Asia/Seoul")),
                 transaction_type=item["transaction_type"],
                 asset_category=item["asset_category"],
-                asset_symbol=item.get("asset_symbol", ""),
-                asset_name=item.get("asset_name", ""),
+                asset_symbol=item["asset_symbol"],
+                asset_name=item["asset_name"],
                 quantity=item["quantity"],
                 transaction_amount=item["transaction_amount"],
             )
@@ -67,4 +69,5 @@ def submit(request):
         return JsonResponse(response_data, safe=False, status=201)
 
     except Exception as e:
+        print(e)
         return JsonResponse({"error": str(e)}, status=400)
