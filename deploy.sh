@@ -1,4 +1,4 @@
 #!/usr/bin/bash
-git clone
+git pull
 docker compose down
-docker compose up -d
+docker compose up -d --build
