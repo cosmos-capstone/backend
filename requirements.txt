@@ -35,3 +35,7 @@ uritemplate==4.1.1
 urllib3==2.2.3
 webencodings==0.5.1
 yfinance==0.2.48
+finance-datareader==0.9.94
+keras==3.6.0
+#keras만 설치해도 되는지 잘 모르겠네
+#tensorflow==2.18.0

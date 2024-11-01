@@ -8,6 +8,9 @@ from sklearn.preprocessing import StandardScaler
 import os
 from pathlib import Path
 
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+
+
 class Prediction(models.Model):
     symbol = models.CharField(max_length=10)
     BASE_DIR = Path(__file__).resolve().parent
