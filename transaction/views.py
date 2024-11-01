@@ -23,7 +23,6 @@ def dumpdata1(request):
         {"id": 8, "transaction_date": "2024-04-17T15:00:00Z", "transaction_type": "buy", "asset_category": "korean_stock", "asset_symbol": "088980.KS", "asset_name": "\ub9e5\ucffc\ub9ac\uc778\ud504\ub77c", "quantity": 40, "transaction_amount": "501200.00"},
         {"id": 9, "transaction_date": "2023-12-13T15:00:00Z", "transaction_type": "buy", "asset_category": "korean_stock", "asset_symbol": "379800.KS", "asset_name": "KODEX \ubbf8\uad6d S&P500TR", "quantity": 20, "transaction_amount": "276400.00"},
         {"id": 10, "transaction_date": "2024-02-07T15:00:00Z", "transaction_type": "buy", "asset_category": "korean_stock", "asset_symbol": "379810.KS", "asset_name": "KODEX \ubbf8\uad6d\ub098\uc2a4\ub2e5 100TR", "quantity": 20, "transaction_amount": "313700.00"}]})
-    # return JsonResponse({'message': 'success', 'data': list(Transaction.objects.values())})
 
 @extend_schema(
     summary="Post transaction data",
@@ -44,26 +43,21 @@ def submit(request):
                 transaction_date=datetime.strptime(item["transaction_date"], "%Y-%m-%d"),
                 transaction_type=item["transaction_type"],
                 asset_category=item["asset_category"],
-                stock_code=item.get("stock_code", ""),
-                stock_name=item.get("stock_name", ""),
-                bond_name=item.get("bond_name", ""),
-                fund_name=item.get("fund_name", ""),
+                asset_symbol=item.get("asset_symbol", ""),
+                asset_name=item.get("asset_name", ""),
                 quantity=item["quantity"],
                 transaction_amount=item["transaction_amount"],
             )
             transaction.save()
             new_transactions.append(transaction)
 
-        # Serialize the saved transactions
         response_data = [
             {
                 "transaction_date": transaction.transaction_date.strftime("%Y-%m-%d"),
                 "transaction_type": transaction.transaction_type,
                 "asset_category": transaction.asset_category,
-                "stock_code": transaction.stock_code,
-                "stock_name": transaction.stock_name,
-                "bond_name": transaction.bond_name,
-                "fund_name": transaction.fund_name,
+                "asset_symbol": transaction.asset_symbol,
+                "asset_name": transaction.asset_name,
                 "quantity": transaction.quantity,
                 "transaction_amount": str(transaction.transaction_amount),
             }
