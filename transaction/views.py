@@ -36,7 +36,6 @@ class TransactionView(APIView):
     )
     def get(self, request, *args, **kwargs):
         try:
-            print("ho")
             return JsonResponse({
                     "message": "success",
                     "data": list(Transaction.objects.all().values())
