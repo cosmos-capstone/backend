@@ -78,6 +78,7 @@ class TransactionView(APIView):
 
             response_data = [
                 {
+                    "id": transaction.id,
                     "transaction_date": transaction.transaction_date.strftime("%Y-%m-%d"),
                     "transaction_type": transaction.transaction_type,
                     "asset_category": transaction.asset_category,
