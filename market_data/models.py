@@ -28,7 +28,10 @@ class StockPrice(models.Model):
         else:
             StockPrice.fetch_and_save_stock_data(stock, symbol, period="max")
 
-        name = stock.info['longName']
+        try:
+            name = stock.info['longName']
+        except Exception as e:
+            raise Exception(symbol + " not found.")
         queryset = StockPrice.objects.filter(symbol=symbol).order_by('datetime')
         currency = queryset[0].currency
         data = list(queryset.values('datetime', 'close_price'))

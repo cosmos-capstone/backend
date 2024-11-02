@@ -20,5 +20,11 @@ class Stock(APIView):
     )
     def get(self, request, *args, **kwargs):
         symbol = kwargs.get('symbol')
-        name, currency, data = StockPrice.get_stock_prices(symbol)
-        return JsonResponse({"name": name, "currency": currency, "data": data})
+
+        try:
+            name, currency, data = StockPrice.get_stock_prices(symbol)
+            return JsonResponse({"name": name, "currency": currency, "data": data})
+
+        except Exception as e:
+            print(type(e), e)
+            return JsonResponse({"error": str(e)}, status=400)
