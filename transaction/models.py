@@ -19,6 +19,7 @@ class Transaction(models.Model):
         ('gold', 'Gold'),
         ('deposit', 'Deposit'),
         ('savings', 'Savings Account'),
+        ('cash', 'Cash'),
     ]
 
     transaction_date = models.DateTimeField()

@@ -55,9 +55,11 @@ class TransactionView(APIView):
             new_transactions = []
             
             for item in data:
-                if not item.get("asset_name"):  # asset_name이 비어 있는지 확인
+                is_cash = item["transaction_type"] == "deposit" or item["transaction_type"] == "withdrawal"
+
+                if not is_cash and not item.get("asset_name"):  # asset_name이 비어 있는지 확인
                     raise Exception("Asset name이 비어있습니다.")
-                if item.get("quantity") == 0:
+                if not is_cash and item.get("quantity") == 0:
                     raise Exception("Quantity가 0이 될 수 없습니다.")
                 if float(item.get("transaction_amount", 0)) == 0:
                     raise Exception("Transaction amount가 0이 될 수 없습니다.")
