@@ -5,6 +5,7 @@ from datetime import datetime
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
+from rest_framework import status
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from django.http import JsonResponse
 from .models import Transaction
@@ -97,3 +98,23 @@ class TransactionView(APIView):
         except Exception as e:
             print(type(e), e)
             return JsonResponse({"error": str(e)}, status=400)
+
+    @extend_schema(
+        summary="Delete transaction data",
+        description="This endpoint for deleting transactions",
+    )
+    def delete(self, request, *args, **kwargs):
+        transaction_id = request.query_params.get("id")
+        
+        if not transaction_id:
+            return JsonResponse({"error": "Transaction ID가 제공되지 않았습니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            # Transaction 인스턴스를 조회하고 삭제
+            transaction = Transaction.objects.get(id=transaction_id)
+            transaction.delete()
+            
+            return JsonResponse({"message": "거래 내역이 성공적으로 삭제되었습니다."})
+        
+        except Transaction.DoesNotExist:
+            return JsonResponse({"error": "해당 ID의 거래 내역을 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND)
