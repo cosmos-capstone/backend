@@ -50,9 +50,6 @@ class TransactionView(APIView):
         description="This endpoint for adding transactions",
     )
     def patch(self, request, *args, **kwargs):
-        if request.method != "POST":
-            return JsonResponse({"error": "Invalid request method."}, status=405)
-
         try:
             data = json.loads(request.body)
             new_transactions = []
