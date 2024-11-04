@@ -3,5 +3,6 @@ from . import views
 
 urlpatterns = [
     path('stock/<str:symbol>/prices', views.Stock.as_view(), name='stock_prices'),
-    path('stocks', views.stocks, name='stocks'),
+    path('korean_stocks', views.korean_stocks, name='korean_stocks'),
+    path('american_stocks', views.american_stocks, name='american_stocks'),
 ]
