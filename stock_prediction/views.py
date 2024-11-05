@@ -20,6 +20,5 @@ class StockPrediction(APIView):
     )
     def get(self, request, *args, **kwargs):
         symbol = kwargs.get('symbol')
-        print(symbol)
         prediction_dates, prediction  = Prediction.get_stock_pred(symbol)        
         return JsonResponse({"date": prediction_dates, "prediction": prediction})

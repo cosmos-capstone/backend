@@ -12,7 +12,6 @@ os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
 
 class Prediction(models.Model):
-    symbol = models.CharField(max_length=10)
     BASE_DIR = Path(__file__).resolve().parent
 
     @staticmethod
