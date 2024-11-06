@@ -31,15 +31,52 @@ def dumpdata1(request):
 
 class TransactionView(APIView):
     @extend_schema(
-        summary="Get all transaction data",
+        summary="Get all transaction data and portion",
         description="This endpoint for getting transactions",
     )
     def get(self, request, *args, **kwargs):
+        path = self.request.path
+        all_data = Transaction.objects.all().values()
+        asset_dict = {
+            'korean_stock':0,
+            'american_stock':0,
+            'korean_bond':0,
+            'american_bound':0,
+            'fund':0,
+            'commodity':0,
+            'gold':0,
+            'deposit':0,
+            'cash':0,
+        }
         try:
-            return JsonResponse({
-                    "message": "success",
-                    "data": list(Transaction.objects.all().values())
-                }, safe=False)
+            if path.endswith('test'):
+                return JsonResponse({
+                        "message": "success",
+                        "data": list(all_data)
+                    }, safe=False)
+            elif path.endswith('myaccount'):
+                for data in all_data:
+                    total_transaction_value = data['transaction_amount'] * data['quantity']
+                    total_cash_value = data["transaction_amount"] # quantity of deposit and withdrawal is always 0
+                    
+                    if data['transaction_type'] == 'deposit':
+                        asset_dict['cash'] += total_cash_value
+                    elif asset_dict['cash'] == 'withdrawal':
+                        asset_dict['cash'] -= total_cash_value
+                    elif data['transaction_type'] == 'buy':
+                        asset_dict[data['asset_category']] += total_transaction_value
+                    elif data['transaction_type'] == 'sell':
+                        asset_dict[data['asset_category']] -= total_transaction_value
+                        
+                asset_dict = {key: max(0, value) for key, value in asset_dict.items()}
+                total_value = sum(asset_dict.values())
+                 # calculate portion
+                if total_value > 0:
+                    asset_dict = {key: round((value / total_value) * 100, 2) for key, value in asset_dict.items()}
+                else:
+                    asset_dict = {key: 0 for key in asset_dict}
+                
+                return JsonResponse({'data': [asset_dict]})
 
         except Exception as e:
             print(type(e), e)
