@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'transaction.apps.TransactionConfig',
     'market_data.apps.MarketDataConfig',
     'stock_prediction.apps.StockPredictionConfig',
-    'rebalancing.apps.RebalancingConfig',
     'drf_spectacular',
     'corsheaders',
 ]
