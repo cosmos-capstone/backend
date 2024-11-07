@@ -159,7 +159,7 @@ class PortfolioView(APIView):
         else:
             asset_dict = {key: 0 for key in asset_dict}
         
-        return JsonResponse({'data': [asset_dict]})
+        return JsonResponse({'data': asset_dict})
 
 class RebalancingView(APIView):
     @extend_schema(
