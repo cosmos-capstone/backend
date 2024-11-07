@@ -33,52 +33,18 @@ def dumpdata1(request):
 
 class TransactionView(APIView):
     @extend_schema(
-        summary="Get all transaction data and portion",
+        summary="Get all transaction data",
         description="This endpoint for getting transactions",
     )
     def get(self, request, *args, **kwargs):
-        path = self.request.path
-        all_data = Transaction.objects.all().values()
-        asset_dict = {
-            'korean_stock':0,
-            'american_stock':0,
-            'korean_bond':0,
-            'american_bound':0,
-            'fund':0,
-            'commodity':0,
-            'gold':0,
-            'deposit':0,
-            'cash':0,
-        }
         try:
+            path = self.request.path
+            all_data = Transaction.objects.all().values()
             if path.endswith('test'):
                 return JsonResponse({
                         "message": "success",
                         "data": list(all_data)
                     }, safe=False)
-            elif path.endswith('myaccount'):
-                for data in all_data:
-                    total_transaction_value = data['transaction_amount'] * data['quantity']
-                    total_cash_value = data["transaction_amount"] # quantity of deposit and withdrawal is always 0
-                    
-                    if data['transaction_type'] == 'deposit':
-                        asset_dict['cash'] += total_cash_value
-                    elif asset_dict['cash'] == 'withdrawal':
-                        asset_dict['cash'] -= total_cash_value
-                    elif data['transaction_type'] == 'buy':
-                        asset_dict[data['asset_category']] += total_transaction_value
-                    elif data['transaction_type'] == 'sell':
-                        asset_dict[data['asset_category']] -= total_transaction_value
-                        
-                asset_dict = {key: max(0, value) for key, value in asset_dict.items()}
-                total_value = sum(asset_dict.values())
-                 # calculate portion
-                if total_value > 0:
-                    asset_dict = {key: round((value / total_value) * 100, 2) for key, value in asset_dict.items()}
-                else:
-                    asset_dict = {key: 0 for key in asset_dict}
-                
-                return JsonResponse({'data': [asset_dict]})
             elif path.endswith('rebalancing'):
                 # sharp ratio of stock 3-Q : K=-0.07, A=1.99,   
                 # sharp ratio of bond 3-Q : K=0.79, A=0.05,
@@ -188,3 +154,44 @@ class TransactionView(APIView):
         
         except Transaction.DoesNotExist:
             return JsonResponse({"error": "해당 ID의 거래 내역을 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND)
+
+class PortfolioView(APIView):
+    @extend_schema(
+        summary="Get portion of assets",
+        description="This endpoint for getting user's portion of each assets",
+    )
+    def get(self, request, *args, **kwargs):
+        all_data = Transaction.objects.all().values()
+        asset_dict = {
+            'korean_stock':0,
+            'american_stock':0,
+            'korean_bond':0,
+            'american_bound':0,
+            'fund':0,
+            'commodity':0,
+            'gold':0,
+            'deposit':0,
+            'cash':0,
+        }
+        for data in all_data:
+            total_transaction_value = data['transaction_amount'] * data['quantity']
+            total_cash_value = data["transaction_amount"] # quantity of deposit and withdrawal is always 0
+            
+            if data['transaction_type'] == 'deposit':
+                asset_dict['cash'] += total_cash_value
+            elif asset_dict['cash'] == 'withdrawal':
+                asset_dict['cash'] -= total_cash_value
+            elif data['transaction_type'] == 'buy':
+                asset_dict[data['asset_category']] += total_transaction_value
+            elif data['transaction_type'] == 'sell':
+                asset_dict[data['asset_category']] -= total_transaction_value
+                
+        asset_dict = {key: max(0, value) for key, value in asset_dict.items()}
+        total_value = sum(asset_dict.values())
+        # calculate portion
+        if total_value > 0:
+            asset_dict = {key: round((value / total_value) * 100, 2) for key, value in asset_dict.items()}
+        else:
+            asset_dict = {key: 0 for key in asset_dict}
+        
+        return JsonResponse({'data': [asset_dict]})
