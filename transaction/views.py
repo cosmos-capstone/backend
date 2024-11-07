@@ -1,12 +1,14 @@
 import json
 import pytz
-from datetime import datetime
+from datetime import datetime, timedelta
+import FinanceDataReader as fdr
+import numpy as np
 
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework import status
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.utils import extend_schema
 from django.http import JsonResponse
 from .models import Transaction
 
@@ -77,6 +79,37 @@ class TransactionView(APIView):
                     asset_dict = {key: 0 for key in asset_dict}
                 
                 return JsonResponse({'data': [asset_dict]})
+            elif path.endswith('rebalancing'):
+                # sharp ratio of stock 3-Q : K=-0.07, A=1.99,   
+                # sharp ratio of bond 3-Q : K=0.79, A=0.05,
+                
+                # K/A deposit interest rate
+                risk_free_rate = 0.022
+                end_date = datetime.today()
+                start_date = end_date - timedelta(days=365)
+                kospi = fdr.DataReader('KS11', start_date, end_date)  # KOSPI
+                nasdaq = fdr.DataReader('IXIC', start_date, end_date)  # NASDAQ
+
+                kospi_1y_return = (kospi['Close'][-1] / kospi['Close'][0]) - 1
+                nasdaq_1y_return = (nasdaq['Close'][-1] / nasdaq['Close'][0]) - 1
+
+                num_days = len(kospi['Close'].dropna())
+
+                kospi_std_dev = kospi['Close'].pct_change().std() * np.sqrt(num_days)
+                nasdaq_std_dev = nasdaq['Close'].pct_change().std() * np.sqrt(num_days)
+
+                sharpe_ratios = {
+                    'korean_stock': (kospi_1y_return - risk_free_rate) / kospi_std_dev,
+                    'american_stock': (nasdaq_1y_return - risk_free_rate) / nasdaq_std_dev,
+                    'korean_bond': 0.79, 
+                    'american_bond': 0.05,
+                    'fund': 0.3,  # ?
+                    'commodity': 0.2, #?
+                    'gold': 0.2,  # ?
+                    'deposit': risk_free_rate
+                }
+                
+                return 0
 
         except Exception as e:
             print(type(e), e)
