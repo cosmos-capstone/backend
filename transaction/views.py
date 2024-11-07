@@ -38,45 +38,10 @@ class TransactionView(APIView):
     )
     def get(self, request, *args, **kwargs):
         try:
-            path = self.request.path
-            all_data = Transaction.objects.all().values()
-            if path.endswith('test'):
-                return JsonResponse({
-                        "message": "success",
-                        "data": list(all_data)
-                    }, safe=False)
-            elif path.endswith('rebalancing'):
-                # sharp ratio of stock 3-Q : K=-0.07, A=1.99,   
-                # sharp ratio of bond 3-Q : K=0.79, A=0.05,
-                
-                # K/A deposit interest rate
-                risk_free_rate = 0.022
-                end_date = datetime.today()
-                start_date = end_date - timedelta(days=365)
-                kospi = fdr.DataReader('KS11', start_date, end_date)  # KOSPI
-                nasdaq = fdr.DataReader('IXIC', start_date, end_date)  # NASDAQ
-
-                kospi_1y_return = (kospi['Close'][-1] / kospi['Close'][0]) - 1
-                nasdaq_1y_return = (nasdaq['Close'][-1] / nasdaq['Close'][0]) - 1
-
-                num_days = len(kospi['Close'].dropna())
-
-                kospi_std_dev = kospi['Close'].pct_change().std() * np.sqrt(num_days)
-                nasdaq_std_dev = nasdaq['Close'].pct_change().std() * np.sqrt(num_days)
-
-                sharpe_ratios = {
-                    'korean_stock': (kospi_1y_return - risk_free_rate) / kospi_std_dev,
-                    'american_stock': (nasdaq_1y_return - risk_free_rate) / nasdaq_std_dev,
-                    'korean_bond': 0.79, 
-                    'american_bond': 0.05,
-                    'fund': 0.3,  # ?
-                    'commodity': 0.2, #?
-                    'gold': 0.2,  # ?
-                    'deposit': risk_free_rate
-                }
-                
-                return 0
-
+            return JsonResponse({
+                    "message": "success",
+                    "data": list(Transaction.objects.all().values())
+                }, safe=False)
         except Exception as e:
             print(type(e), e)
             return JsonResponse({"error": str(e)}, status=400)
@@ -195,3 +160,40 @@ class PortfolioView(APIView):
             asset_dict = {key: 0 for key in asset_dict}
         
         return JsonResponse({'data': [asset_dict]})
+
+class RebalancingView(APIView):
+    @extend_schema(
+        summary="Get rebalanced portion of each assets",
+        description="This endpoint for getting rebalanced portion of each assets",
+    )
+    def get(self, request, *args, **kwargs):
+        # sharp ratio of stock 3-Q : K=-0.07, A=1.99,   
+        # sharp ratio of bond 3-Q : K=0.79, A=0.05,
+        
+        # K/A deposit interest rate
+        risk_free_rate = 0.022
+        end_date = datetime.today()
+        start_date = end_date - timedelta(days=365)
+        kospi = fdr.DataReader('KS11', start_date, end_date)  # KOSPI
+        nasdaq = fdr.DataReader('IXIC', start_date, end_date)  # NASDAQ
+
+        kospi_1y_return = (kospi['Close'][-1] / kospi['Close'][0]) - 1
+        nasdaq_1y_return = (nasdaq['Close'][-1] / nasdaq['Close'][0]) - 1
+
+        num_days = len(kospi['Close'].dropna())
+
+        kospi_std_dev = kospi['Close'].pct_change().std() * np.sqrt(num_days)
+        nasdaq_std_dev = nasdaq['Close'].pct_change().std() * np.sqrt(num_days)
+
+        sharpe_ratios = {
+            'korean_stock': (kospi_1y_return - risk_free_rate) / kospi_std_dev,
+            'american_stock': (nasdaq_1y_return - risk_free_rate) / nasdaq_std_dev,
+            'korean_bond': 0.79, 
+            'american_bond': 0.05,
+            'fund': 0.3,  # ?
+            'commodity': 0.2, #?
+            'gold': 0.2,  # ?
+            'deposit': risk_free_rate
+        }
+        
+        return 0
