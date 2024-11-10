@@ -157,6 +157,21 @@ class RebalancingView(APIView):
         kospi_std_dev = kospi['Close'].pct_change().std() * np.sqrt(num_days)
         nasdaq_std_dev = nasdaq['Close'].pct_change().std() * np.sqrt(num_days)
 
+        sharpe_ratios = {
+            'korean_stock': (kospi_1y_return - risk_free_rate) / kospi_std_dev,
+            'american_stock': (nasdaq_1y_return - risk_free_rate) / nasdaq_std_dev,
+            'korean_bond': 0.79, 
+            'american_bond': 0.05,
+            'fund': 0.3,  # ?
+            'commodity': 0.2, #?
+            'gold': 0.2,  # ?
+            'deposit': risk_free_rate
+        }
+        total_sharpe = sum(sharpe_ratios.values())
+        target_portfolio = {asset: round((sharpe / total_sharpe)*100,2) for asset, sharpe in sharpe_ratios.items()}
+        
+        weight_current = Decimal(0.7)
+        weight_target = Decimal(0.3)
         
         final_portfolio = {
     asset: round(Decimal(str(current_portfolio.get(asset, 0))) * weight_current + 
