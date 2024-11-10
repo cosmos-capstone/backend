@@ -9,8 +9,11 @@ from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework import status
 from drf_spectacular.utils import extend_schema
+from decimal import Decimal
 from django.http import JsonResponse
 from .models import Transaction
+from .utils import calculate_asset_sum
+
 
 @extend_schema(
     summary="Dummy Data 1",
@@ -126,39 +129,7 @@ class PortfolioView(APIView):
         description="This endpoint for getting user's portion of each assets",
     )
     def get(self, request, *args, **kwargs):
-        all_data = Transaction.objects.all().values()
-        asset_dict = {
-            'korean_stock':0,
-            'american_stock':0,
-            'korean_bond':0,
-            'american_bound':0,
-            'fund':0,
-            'commodity':0,
-            'gold':0,
-            'deposit':0,
-            'cash':0,
-        }
-        for data in all_data:
-            total_transaction_value = data['transaction_amount'] * data['quantity']
-            total_cash_value = data["transaction_amount"] # quantity of deposit and withdrawal is always 0
-            
-            if data['transaction_type'] == 'deposit':
-                asset_dict['cash'] += total_cash_value
-            elif asset_dict['cash'] == 'withdrawal':
-                asset_dict['cash'] -= total_cash_value
-            elif data['transaction_type'] == 'buy':
-                asset_dict[data['asset_category']] += total_transaction_value
-            elif data['transaction_type'] == 'sell':
-                asset_dict[data['asset_category']] -= total_transaction_value
-                
-        asset_dict = {key: max(0, value) for key, value in asset_dict.items()}
-        total_value = sum(asset_dict.values())
-        # calculate portion
-        if total_value > 0:
-            asset_dict = {key: round((value / total_value) * 100, 2) for key, value in asset_dict.items()}
-        else:
-            asset_dict = {key: 0 for key in asset_dict}
-        
+        asset_dict = calculate_asset_sum()
         return JsonResponse({'data': asset_dict})
 
 class RebalancingView(APIView):
@@ -167,6 +138,7 @@ class RebalancingView(APIView):
         description="This endpoint for getting rebalanced portion of each assets",
     )
     def get(self, request, *args, **kwargs):
+        current_portfolio = calculate_asset_sum()
         # sharp ratio of stock 3-Q : K=-0.07, A=1.99,   
         # sharp ratio of bond 3-Q : K=0.79, A=0.05,
         
@@ -174,26 +146,24 @@ class RebalancingView(APIView):
         risk_free_rate = 0.022
         end_date = datetime.today()
         start_date = end_date - timedelta(days=365)
+        
         kospi = fdr.DataReader('KS11', start_date, end_date)  # KOSPI
         nasdaq = fdr.DataReader('IXIC', start_date, end_date)  # NASDAQ
 
         kospi_1y_return = (kospi['Close'][-1] / kospi['Close'][0]) - 1
         nasdaq_1y_return = (nasdaq['Close'][-1] / nasdaq['Close'][0]) - 1
-
         num_days = len(kospi['Close'].dropna())
 
         kospi_std_dev = kospi['Close'].pct_change().std() * np.sqrt(num_days)
         nasdaq_std_dev = nasdaq['Close'].pct_change().std() * np.sqrt(num_days)
 
-        sharpe_ratios = {
-            'korean_stock': (kospi_1y_return - risk_free_rate) / kospi_std_dev,
-            'american_stock': (nasdaq_1y_return - risk_free_rate) / nasdaq_std_dev,
-            'korean_bond': 0.79, 
-            'american_bond': 0.05,
-            'fund': 0.3,  # ?
-            'commodity': 0.2, #?
-            'gold': 0.2,  # ?
-            'deposit': risk_free_rate
-        }
         
-        return 0
+        final_portfolio = {
+    asset: round(Decimal(str(current_portfolio.get(asset, 0))) * weight_current + 
+                 Decimal(str(target_portfolio.get(asset, 0))) * weight_target, 2)
+    for asset in set(current_portfolio) | set(target_portfolio)
+}
+        
+        return JsonResponse({
+            "data" : final_portfolio
+        })
