@@ -23,7 +23,7 @@ And check here: http://127.0.0.1:8000/transaction/dumpdata1
 # Links
 ## Dump data
 - https://cosmos-backend.cho0h5.org/transaction/dumpdata1
-- https://cosmos-backend.cho0h5.org/transaction/myaccount (The portions of each asset_category)
+- https://cosmos-backend.cho0h5.org/transaction/portfolio (The portions of each asset_category)
 
 ## Market data
 - https://cosmos-backend.cho0h5.org/market_data/stock/AAPL/prices (American stock)
