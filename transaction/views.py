@@ -12,7 +12,7 @@ from drf_spectacular.utils import extend_schema
 from decimal import Decimal
 from django.http import JsonResponse
 from .models import Transaction
-from .utils import calculate_asset_sum
+from .utils import calculate_asset_sum, calculate_asset_sum_by_name
 
 
 @extend_schema(
@@ -125,11 +125,20 @@ class TransactionView(APIView):
 
 class PortfolioView(APIView):
     @extend_schema(
-        summary="Get portion of assets",
+        summary="Get portion of portfolio",
+        description="This endpoint for getting user's portion of each portfolio",
+    )
+    def get(self, request, *args, **kwargs):
+        port_dict = calculate_asset_sum()
+        return JsonResponse({'data': port_dict})
+    
+class AssetView(APIView):
+    @extend_schema(
+        summary="Get portion of stocks",
         description="This endpoint for getting user's portion of each assets",
     )
     def get(self, request, *args, **kwargs):
-        asset_dict = calculate_asset_sum()
+        asset_dict = calculate_asset_sum_by_name()
         return JsonResponse({'data': asset_dict})
 
 class RebalancingView(APIView):
@@ -162,9 +171,9 @@ class RebalancingView(APIView):
             'american_stock': (nasdaq_1y_return - risk_free_rate) / nasdaq_std_dev,
             'korean_bond': 0.79, 
             'american_bond': 0.05,
-            'fund': 0.3,  # ?
-            'commodity': 0.2, #?
-            'gold': 0.2,  # ?
+            'fund': 0.3,  # 2024 ratio
+            'commodity': 0.2, #2024 ratio
+            'gold': 0.2,  # 2024 ratio
             'deposit': risk_free_rate
         }
         total_sharpe = sum(sharpe_ratios.values())
