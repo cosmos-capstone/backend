@@ -12,7 +12,7 @@ from drf_spectacular.utils import extend_schema
 from decimal import Decimal
 from django.http import JsonResponse
 from .models import Transaction
-from .utils import calculate_asset_sum, calculate_asset_sum_by_name
+from .utils import calculate_asset_sum, calculate_asset_sum_by_name, get_asset_totals
 
 
 @extend_schema(
@@ -191,3 +191,12 @@ class RebalancingView(APIView):
         return JsonResponse({
             "data" : final_portfolio
         })
+
+class PortfolioTotalView(APIView):
+    @extend_schema(
+        summary="Get sum of each essets",
+        description="This endpoint for getting sum of each portfolio",
+    )
+    def get(self, request, *args, **kwargs):
+        port_dict = get_asset_totals()
+        return JsonResponse({'data': port_dict})

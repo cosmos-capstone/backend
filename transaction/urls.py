@@ -5,6 +5,7 @@ urlpatterns = [
     path('dumpdata1', views.dumpdata1, name='dumpdata1'),
     path('test', views.TransactionView.as_view(), name='test'),
     path('portfolio', views.PortfolioView.as_view(), name='portfolio'),
+    path('portfolio_sum', views.PortfolioTotalView.as_view(), name='portfolio_sum'),
     path('rebalancing', views.RebalancingView.as_view(), name='rebalancing'),
     path('asset', views.AssetView.as_view(), name='asset'),
 ]
