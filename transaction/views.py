@@ -153,22 +153,24 @@ class RebalancingView(APIView):
         
         # K/A deposit interest rate
         risk_free_rate = 0.022
-        end_date = datetime.today()
-        start_date = end_date - timedelta(days=365)
+        # end_date = datetime.today()
+        # start_date = end_date - timedelta(days=365)
         
-        kospi = fdr.DataReader('KS11', start_date, end_date)  # KOSPI
-        nasdaq = fdr.DataReader('IXIC', start_date, end_date)  # NASDAQ
+        # kospi = fdr.DataReader('KS11', start_date, end_date)  # KOSPI
+        # nasdaq = fdr.DataReader('IXIC', start_date, end_date)  # NASDAQ
 
-        kospi_1y_return = (kospi['Close'][-1] / kospi['Close'][0]) - 1
-        nasdaq_1y_return = (nasdaq['Close'][-1] / nasdaq['Close'][0]) - 1
-        num_days = len(kospi['Close'].dropna())
+        # kospi_1y_return = (kospi['Close'][-1] / kospi['Close'][0]) - 1
+        # nasdaq_1y_return = (nasdaq['Close'][-1] / nasdaq['Close'][0]) - 1
+        # num_days = len(kospi['Close'].dropna())
 
-        kospi_std_dev = kospi['Close'].pct_change().std() * np.sqrt(num_days)
-        nasdaq_std_dev = nasdaq['Close'].pct_change().std() * np.sqrt(num_days)
+        # kospi_std_dev = kospi['Close'].pct_change().std() * np.sqrt(num_days)
+        # nasdaq_std_dev = nasdaq['Close'].pct_change().std() * np.sqrt(num_days)
 
         sharpe_ratios = {
-            'korean_stock': (kospi_1y_return - risk_free_rate) / kospi_std_dev,
-            'american_stock': (nasdaq_1y_return - risk_free_rate) / nasdaq_std_dev,
+            # 'korean_stock': (kospi_1y_return - risk_free_rate) / kospi_std_dev,
+            # 'american_stock': (nasdaq_1y_return - risk_free_rate) / nasdaq_std_dev,
+            'korean_stock': 0.7,
+            'american_stock': 0.9,
             'korean_bond': 0.79, 
             'american_bond': 0.05,
             'fund': 0.3,  # 2024 ratio
