@@ -122,8 +122,10 @@ def get_asset_totals():
             asset_dict['cash'] -= total_cash_value
         elif data['transaction_type'] == 'buy':
             asset_dict[data['asset_category']] += total_transaction_value
+            asset_dict['cash'] -= total_transaction_value
         elif data['transaction_type'] == 'sell':
             asset_dict[data['asset_category']] -= total_transaction_value
+            asset_dict['cash'] += total_transaction_value
 
     asset_dict = {key: max(0, value) for key, value in asset_dict.items()}
 
