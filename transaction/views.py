@@ -185,10 +185,10 @@ class RebalancingView(APIView):
         weight_target = Decimal(0.3)
         
         final_portfolio = {
-    asset: round(Decimal(str(current_portfolio.get(asset, 0))) * weight_current + 
+            asset: round(Decimal(str(current_portfolio.get(asset, 0))) * weight_current + 
                  Decimal(str(target_portfolio.get(asset, 0))) * weight_target, 2)
-    for asset in set(current_portfolio) | set(target_portfolio)
-}
+            for asset in set(current_portfolio) | set(target_portfolio)
+        }
         
         return JsonResponse({
             "data" : final_portfolio
