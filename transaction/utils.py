@@ -26,8 +26,10 @@ def calculate_asset_sum():
             asset_dict['cash'] -= total_cash_value
         elif data['transaction_type'] == 'buy':
             asset_dict[data['asset_category']] += total_transaction_value
+            asset_dict['cash'] -= total_transaction_value
         elif data['transaction_type'] == 'sell':
             asset_dict[data['asset_category']] -= total_transaction_value
+            asset_dict['cash'] += total_transaction_value
 
     # 음수 값을 0으로 설정하고 총합 계산
     asset_dict = {key: max(0, value) for key, value in asset_dict.items()}
