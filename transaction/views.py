@@ -1,6 +1,8 @@
 import json
 import pytz
 
+from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema
 from rest_framework.views import APIView
 from rest_framework import status
@@ -120,10 +122,33 @@ class AssetView(APIView):
 class RebalancingView(APIView):
     @extend_schema(
         summary="Get rebalanced portion of each assets",
-        description="This endpoint for getting rebalanced portion of each assets",
+        description=(
+            "This endpoint calculates the rebalanced portion of each asset. "
+            "If the `date` parameter is provided, it calculates the portion for the specified date. "
+            "If not, it uses the current date."
+        ),
+        parameters=[
+            OpenApiParameter(
+                name="date",
+                type=OpenApiTypes.DATE,
+                description="Optional. The date for which the rebalanced portfolio should be calculated. Format: YYYY-MM-DD.",
+                required=False
+            )
+        ],
+        responses={
+            200: OpenApiTypes.OBJECT,
+            400: OpenApiTypes.OBJECT,
+        }
     )
     def get(self, request, *args, **kwargs):
-        current_portfolio = calculate_asset_sum()
+        date_str = request.GET.get('date', None)
+
+        if not date_str:
+            date_obj = datetime.now()
+        else:
+            date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+
+        current_portfolio = calculate_asset_sum(date_obj)
         
         return JsonResponse({
             "data" : rebalance_asset(current_portfolio)

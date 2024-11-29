@@ -48,7 +48,7 @@ def rebalance_asset(portfolio):
     return final_portfolio
 
 
-def calculate_asset_sum():
+def calculate_asset_sum(date):
     all_data = Transaction.objects.all().values()
     asset_dict = {
         'korean_stock': 0,
