@@ -2,7 +2,6 @@ import json
 import pytz
 
 from drf_spectacular.utils import extend_schema
-from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework import status
 from drf_spectacular.utils import extend_schema
