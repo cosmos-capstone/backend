@@ -107,7 +107,7 @@ class PortfolioView(APIView):
         description="This endpoint for getting user's portion of each portfolio",
     )
     def get(self, request, *args, **kwargs):
-        port_dict = calculate_asset_sum()
+        port_dict = calculate_asset_sum(datetime(9999, 12, 31))
         return JsonResponse({'data': port_dict})
     
 class AssetView(APIView):
