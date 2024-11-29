@@ -1,6 +1,52 @@
 # utils.py
 from .models import Transaction
 import yfinance as yf
+from decimal import Decimal
+
+def rebalance_asset(portfolio):
+    # sharp ratio of stock 3-Q : K=-0.07, A=1.99,   
+    # sharp ratio of bond 3-Q : K=0.79, A=0.05,
+    
+    # K/A deposit interest rate
+    risk_free_rate = 0.022
+    # end_date = datetime.today()
+    # start_date = end_date - timedelta(days=365)
+    
+    # kospi = fdr.DataReader('KS11', start_date, end_date)  # KOSPI
+    # nasdaq = fdr.DataReader('IXIC', start_date, end_date)  # NASDAQ
+
+    # kospi_1y_return = (kospi['Close'][-1] / kospi['Close'][0]) - 1
+    # nasdaq_1y_return = (nasdaq['Close'][-1] / nasdaq['Close'][0]) - 1
+    # num_days = len(kospi['Close'].dropna())
+
+    # kospi_std_dev = kospi['Close'].pct_change().std() * np.sqrt(num_days)
+    # nasdaq_std_dev = nasdaq['Close'].pct_change().std() * np.sqrt(num_days)
+
+    sharpe_ratios = {
+        # 'korean_stock': (kospi_1y_return - risk_free_rate) / kospi_std_dev,
+        # 'american_stock': (nasdaq_1y_return - risk_free_rate) / nasdaq_std_dev,
+        'korean_stock': 0.7,
+        'american_stock': 0.9,
+        'korean_bond': 0.79, 
+        'american_bond': 0.05,
+        'fund': 0.3,  # 2024 ratio
+        'commodity': 0.2, #2024 ratio
+        'gold': 0.2,  # 2024 ratio
+        'deposit': risk_free_rate
+    }
+    total_sharpe = sum(sharpe_ratios.values())
+    target_portfolio = {asset: round((sharpe / total_sharpe)*100,2) for asset, sharpe in sharpe_ratios.items()}
+    
+    weight_current = Decimal(0.7)
+    weight_target = Decimal(0.3)
+    
+    final_portfolio = {
+        asset: round(Decimal(str(portfolio.get(asset, 0))) * weight_current + 
+                Decimal(str(target_portfolio.get(asset, 0))) * weight_target, 2)
+        for asset in set(portfolio) | set(target_portfolio)
+    }
+    return final_portfolio
+
 
 def calculate_asset_sum():
     all_data = Transaction.objects.all().values()
