@@ -144,7 +144,7 @@ class RebalancingView(APIView):
         date_str = request.GET.get('date', None)
 
         if not date_str:
-            date_obj = datetime.now()
+            date_obj = datetime(9999, 12, 31)
         else:
             date_obj = datetime.strptime(date_str, '%Y-%m-%d')
 
