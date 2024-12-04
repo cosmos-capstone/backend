@@ -159,8 +159,7 @@ def calculate_asset_sum_by_name():
     return asset_dict
 
 
-def get_asset_totals():
-    all_data = Transaction.objects.all().values()
+def get_asset_totals(all_data):
     asset_dict = {
         'korean_stock': 0,
         'american_stock': 0,

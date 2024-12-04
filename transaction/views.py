@@ -160,7 +160,7 @@ class PortfolioTotalView(APIView):
         description="This endpoint for getting sum of each portfolio",
     )
     def get(self, request, *args, **kwargs):
-        port_dict = get_asset_totals()
+        port_dict = get_asset_totals(Transaction.objects.all().values())
         return JsonResponse({'data': port_dict})
 
 class RebalancedTransaction(APIView):
