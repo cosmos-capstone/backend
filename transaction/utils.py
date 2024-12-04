@@ -51,15 +51,15 @@ def rebalance_asset(portfolio):
 def calculate_asset_sum(date):
     all_data = Transaction.objects.filter(transaction_date__lte=date).values()
     asset_dict = {
-        'korean_stock': 0,
-        'american_stock': 0,
-        'korean_bond': 0,
-        'american_bond': 0,
-        'fund': 0,
-        'commodity': 0,
-        'gold': 0,
-        'deposit': 0,
-        'cash': 0,
+        'korean_stock': 0.0,
+        'american_stock': 0.0,
+        'korean_bond': 0.0,
+        'american_bond': 0.0,
+        'fund': 0.0,
+        'commodity': 0.0,
+        'gold': 0.0,
+        'deposit': 0.0,
+        'cash': 0.0,
     }
     
     for data in all_data:
@@ -111,13 +111,21 @@ def calculate_asset_sum_by_name():
 
     for data in all_data:
         total_cash_value = data["transaction_amount"]  # quantity of deposit and withdrawal is always 0
+        total_transaction_value = float(data['transaction_amount'])
         
         ticker = data["asset_symbol"]
-        recent_data = yf.download(ticker, period="1d")
-        latest_close = float(recent_data['Close'].iloc[-1])
+        try:
+            recent_data = yf.download(ticker, period="1d")
+            latest_close = float(recent_data['Close'].iloc[-1])
 
-        total_transaction_value = data['transaction_amount'] * data['quantity']
-        total_transaction_value = float(data['transaction_amount']) * latest_close # 산 당시 가격이 아니라 최근 가격으로 곱해서 
+            stock = yf.Ticker(ticker)
+            currency = stock.info.get("currency", "Unknown")
+            if currency == "USD":
+                total_transaction_value = float(data['quantity']) * latest_close * 1400 # 산 당시 가격이 아니라 최근 가격으로 곱해서 
+            else:
+                total_transaction_value = float(data['quantity']) * latest_close # 산 당시 가격이 아니라 최근 가격으로 곱해서 
+        except Exception as e:
+            pass
         
         # deposit과 withdrawal의 경우 asset_name이 없으므로 cash에만 반영
         if data['transaction_type'] == 'deposit':
@@ -151,8 +159,8 @@ def calculate_asset_sum_by_name():
                 asset_dict[asset_name]['rate'] -= total_transaction_value
 
     # 음수 값을 0으로 설정하고 총합 계산
-    asset_dict = {key: {'rate': max(0, value['rate']), 'sector': value['sector'], 'industry': value['industry']}
-                  for key, value in asset_dict.items()}
+    asset_dict = {key: {'rate': max(0.0, float(value['rate'])), 'sector': value['sector'], 'industry': value['industry']}
+                for key, value in asset_dict.items()}
     total_value = sum(item['rate'] for item in asset_dict.values())
 
     # 전체 자산 비율 계산
