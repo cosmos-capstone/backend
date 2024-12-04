@@ -226,6 +226,9 @@ def get_asset_totals(all_data):
 def get_rebalanced_transaction(rebalanced_portfolio, date):
     filtered_data = Transaction.objects.filter(transaction_date__lte=date).values()
     past_portfolio = get_asset_totals(filtered_data)
-    print(past_portfolio)
     past_sum = sum(past_portfolio.values())
-    return past_sum
+    for key in rebalanced_portfolio:
+        rebalanced_portfolio[key] = float(rebalanced_portfolio[key]) * float(past_sum) / 100
+    print(rebalanced_portfolio)
+    print("past_sum", past_sum)
+    return rebalanced_portfolio
