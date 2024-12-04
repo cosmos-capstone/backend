@@ -63,6 +63,7 @@ def calculate_asset_sum(date):
     }
     
     for data in all_data:
+        print(1)
         total_cash_value = data["transaction_amount"]  # quantity of deposit and withdrawal is always 0
         total_transaction_value = float(data['transaction_amount'])
         
@@ -82,20 +83,21 @@ def calculate_asset_sum(date):
             pass
         
         if data['transaction_type'] == 'deposit':
-            asset_dict['cash'] += total_cash_value
+            asset_dict['cash'] += float(total_cash_value)
         elif data['transaction_type'] == 'withdrawal':
-            asset_dict['cash'] -= total_cash_value
+            asset_dict['cash'] -= float(total_cash_value)
         elif data['transaction_type'] == 'buy':
-            asset_dict[data['asset_category']] += int(total_transaction_value)
-            asset_dict['cash'] -= int(total_transaction_value)
+            asset_dict[data['asset_category']] += float(total_transaction_value)
+            asset_dict['cash'] -= float(total_transaction_value)
         elif data['transaction_type'] == 'sell':
-            asset_dict[data['asset_category']] -= int(total_transaction_value)
-            asset_dict['cash'] += int(total_transaction_value)
+            asset_dict[data['asset_category']] -= float(total_transaction_value)
+            asset_dict['cash'] += float(total_transaction_value)
 
     # 음수 값을 0으로 설정하고 총합 계산
     asset_dict = {key: max(0, value) for key, value in asset_dict.items()}
     total_value = sum(asset_dict.values())
 
+    print(4)
     # 전체 자산 비율 계산
     if total_value > 0:
         asset_dict = {key: round((value / total_value) * 100, 2) for key, value in asset_dict.items()}
@@ -207,15 +209,15 @@ def get_asset_totals(all_data):
             pass
         
         if data['transaction_type'] == 'deposit':
-            asset_dict['cash'] += total_cash_value
+            asset_dict['cash'] += float(total_cash_value)
         elif data['transaction_type'] == 'withdrawal':
-            asset_dict['cash'] -= total_cash_value
+            asset_dict['cash'] -= float(total_cash_value)
         elif data['transaction_type'] == 'buy':
-            asset_dict[data['asset_category']] += int(total_transaction_value)
-            asset_dict['cash'] -= int(total_transaction_value)
+            asset_dict[data['asset_category']] += float(total_transaction_value)
+            asset_dict['cash'] -= float(total_transaction_value)
         elif data['transaction_type'] == 'sell':
-            asset_dict[data['asset_category']] -= int(total_transaction_value)
-            asset_dict['cash'] += int(total_transaction_value)
+            asset_dict[data['asset_category']] -= float(total_transaction_value)
+            asset_dict['cash'] += float(total_transaction_value)
 
     asset_dict = {key: max(0, value) for key, value in asset_dict.items()}
 
