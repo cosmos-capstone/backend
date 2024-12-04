@@ -7,4 +7,5 @@ urlpatterns = [
     path('portfolio_sum', views.PortfolioTotalView.as_view(), name='portfolio_sum'),
     path('rebalancing', views.RebalancingView.as_view(), name='rebalancing'),
     path('asset', views.AssetView.as_view(), name='asset'),
+    path('rebalanced_transaction', views.RebalancedTransaction.as_view(), name='rebalanced_transaction'),
 ]

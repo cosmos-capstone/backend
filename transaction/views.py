@@ -10,7 +10,7 @@ from drf_spectacular.utils import extend_schema
 from datetime import datetime
 from django.http import JsonResponse
 from .models import Transaction
-from .utils import rebalance_asset, calculate_asset_sum, calculate_asset_sum_by_name, get_asset_totals
+from .utils import rebalance_asset, calculate_asset_sum, calculate_asset_sum_by_name, get_asset_totals, get_rebalanced_transaction
 
 class TransactionView(APIView):
     @extend_schema(
@@ -162,3 +162,23 @@ class PortfolioTotalView(APIView):
     def get(self, request, *args, **kwargs):
         port_dict = get_asset_totals()
         return JsonResponse({'data': port_dict})
+
+class RebalancedTransaction(APIView):
+    @extend_schema(
+        summary="Get rebalenced transactions",
+        parameters=[
+            OpenApiParameter(
+                name="date",
+                type=OpenApiTypes.DATE,
+            )
+        ],
+    )
+    def get(self, request, *args, **kwargs):
+        date_str = request.GET.get('date')
+        date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+        current_portfolio = calculate_asset_sum(date_obj)
+        rebalanced_portfolio = rebalance_asset(current_portfolio)
+        
+        return JsonResponse({
+            "data" : get_rebalanced_transaction(rebalanced_portfolio, date_obj)
+        })

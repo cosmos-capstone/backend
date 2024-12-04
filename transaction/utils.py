@@ -191,3 +191,7 @@ def get_asset_totals():
     asset_dict = {key: max(0, value) for key, value in asset_dict.items()}
 
     return asset_dict
+
+def get_rebalanced_transaction(rebalanced_portfolio, date):
+    all_data = Transaction.objects.filter(transaction_date__lte=date).values()
+    return -1
