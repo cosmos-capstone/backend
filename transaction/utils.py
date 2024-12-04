@@ -174,19 +174,28 @@ def get_asset_totals(all_data):
     }
     
     for data in all_data:
-        total_transaction_value = data['transaction_amount'] * data['quantity']
-        total_cash_value = data["transaction_amount"]
-
+        total_cash_value = data["transaction_amount"]  # quantity of deposit and withdrawal is always 0
+        total_transaction_value = float(data['transaction_amount'])
+        
+        # 가장 최근 주가 가져오기 (종가)
+        ticker = data["asset_symbol"]
+        try:
+            recent_data = yf.download(ticker, period="1d")
+            latest_close = float(recent_data['Close'].iloc[-1])
+            total_transaction_value *= latest_close # 산 당시 가격이 아니라 최근 가격으로 곱해서 
+        except Exception as e:
+            pass
+        
         if data['transaction_type'] == 'deposit':
             asset_dict['cash'] += total_cash_value
         elif data['transaction_type'] == 'withdrawal':
             asset_dict['cash'] -= total_cash_value
         elif data['transaction_type'] == 'buy':
-            asset_dict[data['asset_category']] += total_transaction_value
-            asset_dict['cash'] -= total_transaction_value
+            asset_dict[data['asset_category']] += int(total_transaction_value)
+            asset_dict['cash'] -= int(total_transaction_value)
         elif data['transaction_type'] == 'sell':
-            asset_dict[data['asset_category']] -= total_transaction_value
-            asset_dict['cash'] += total_transaction_value
+            asset_dict[data['asset_category']] -= int(total_transaction_value)
+            asset_dict['cash'] += int(total_transaction_value)
 
     asset_dict = {key: max(0, value) for key, value in asset_dict.items()}
 
