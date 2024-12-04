@@ -176,6 +176,7 @@ class RebalancedTransaction(APIView):
     def get(self, request, *args, **kwargs):
         date_str = request.GET.get('date')
         date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+        date_obj = pytz.utc.localize(date_obj)
         current_portfolio = calculate_asset_sum(date_obj)
         rebalanced_portfolio = rebalance_asset(current_portfolio)
         

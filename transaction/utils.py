@@ -192,5 +192,7 @@ def get_asset_totals(all_data):
     return asset_dict
 
 def get_rebalanced_transaction(rebalanced_portfolio, date):
-    all_data = Transaction.objects.filter(transaction_date__lte=date).values()
-    return -1
+    filtered_data = Transaction.objects.filter(transaction_date__lte=date).values()
+    past_portfolio = get_asset_totals(filtered_data)
+    past_sum = sum(past_portfolio.values())
+    return past_sum
