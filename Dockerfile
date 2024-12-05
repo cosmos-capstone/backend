@@ -11,5 +11,5 @@ RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
 COPY . /app/
 
 # Run the Django development server
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "mysite.wsgi", "--workers", "2", "--threads", "2"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "mysite.wsgi", "--workers", "4", "--threads", "4"]
 
