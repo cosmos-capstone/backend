@@ -227,6 +227,4 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
     past_sum = sum(past_portfolio.values())
     for key in rebalanced_portfolio:
         rebalanced_portfolio[key] = float(rebalanced_portfolio[key]) * float(past_sum) / 100
-    print(rebalanced_portfolio)
-    print("past_sum", past_sum)
     return rebalanced_portfolio
