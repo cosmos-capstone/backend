@@ -272,7 +272,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
             "asset_category": "korean_stock",
             "asset_symbol": "102110.KS",
             "asset_name": "TIGER 200",
-            "quantity": 1,
+            "quantity": rebalanced_portfolio['korean_stock'] / KS102110_WON,
             "transaction_amount": str(KS102110_WON)
         },
         {
@@ -282,7 +282,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
             "asset_category": "korean_stock",
             "asset_symbol": "148070.KS",
             "asset_name": "KOSEF 국고채10년",
-            "quantity": 1,
+            "quantity": rebalanced_portfolio['korean_bond'] / KS148070_WON,
             "transaction_amount": str(KS148070_WON)
         },
         {
@@ -292,7 +292,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
             "asset_category": "american_stock",
             "asset_symbol": "SPY",
             "asset_name": "SPDR S&P 500 ETF Trust",
-            "quantity": 1,
+            "quantity": rebalanced_portfolio['american_stock'] / SPY_WON,
             "transaction_amount": str(SPY_WON)
         },
         {
@@ -302,7 +302,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
             "asset_category": "american_stock",
             "asset_symbol": "BND",
             "asset_name": "Vanguard Total Bond Market Index Fund",
-            "quantity": 1,
+            "quantity": rebalanced_portfolio['american_bond'] / BND_WON,
             "transaction_amount": str(BND_WON)
         },
         {
@@ -312,7 +312,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
             "asset_category": "american_stock",
             "asset_symbol": "VTI",
             "asset_name": "Vanguard Total Stock Market Index Fund ETF Shares",
-            "quantity": 1,
+            "quantity": rebalanced_portfolio['fund'] / VTI_WON,
             "transaction_amount": str(VTI_WON)
         },
         {
@@ -322,7 +322,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
             "asset_category": "american_stock",
             "asset_symbol": "DBC",
             "asset_name": "Invesco DB Commodity Index Tracking Fund",
-            "quantity": 1,
+            "quantity": rebalanced_portfolio['commodity'] / DBC_WON,
             "transaction_amount": str(DBC_WON)
         },
         {
@@ -332,7 +332,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
             "asset_category": "american_stock",
             "asset_symbol": "GLD",
             "asset_name": "SPDR Gold Shares",
-            "quantity": 1,
+            "quantity": rebalanced_portfolio['gold'] / GLD_WON,
             "transaction_amount": str(GLD_WON)
         },
     ]
