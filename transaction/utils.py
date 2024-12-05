@@ -71,7 +71,7 @@ def calculate_asset_sum(date):
         ticker = data["asset_symbol"]
         try:
             recent_data = yf.download(ticker, period="1d")
-            latest_close = float(recent_data['Close'].iloc[-1])
+            latest_close = float(recent_data['Close'].iloc[-1].item())
 
             stock = yf.Ticker(ticker)
             currency = stock.info.get("currency", "Unknown")
@@ -118,7 +118,7 @@ def calculate_asset_sum_by_name():
         ticker = data["asset_symbol"]
         try:
             recent_data = yf.download(ticker, period="1d")
-            latest_close = float(recent_data['Close'].iloc[-1])
+            latest_close = float(recent_data['Close'].iloc[-1].item())
 
             stock = yf.Ticker(ticker)
             currency = stock.info.get("currency", "Unknown")
@@ -197,7 +197,7 @@ def get_asset_totals(all_data):
         ticker = data["asset_symbol"]
         try:
             recent_data = yf.download(ticker, period="1d")
-            latest_close = float(recent_data['Close'].iloc[-1])
+            latest_close = float(recent_data['Close'].iloc[-1].item())
 
             stock = yf.Ticker(ticker)
             currency = stock.info.get("currency", "Unknown")
