@@ -46,6 +46,7 @@ class StockPrice(models.Model):
 
         if history.empty:
             return
+        history = history.dropna(subset=['Close'])
 
         history_datetimes = [dt.to_pydatetime() for dt in history.index]
 
