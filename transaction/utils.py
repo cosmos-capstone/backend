@@ -63,7 +63,6 @@ def calculate_asset_sum(date):
     }
     
     for data in all_data:
-        print(1)
         total_cash_value = data["transaction_amount"]  # quantity of deposit and withdrawal is always 0
         total_transaction_value = float(data['transaction_amount'])
         
@@ -97,7 +96,6 @@ def calculate_asset_sum(date):
     asset_dict = {key: max(0, value) for key, value in asset_dict.items()}
     total_value = sum(asset_dict.values())
 
-    print(4)
     # 전체 자산 비율 계산
     if total_value > 0:
         asset_dict = {key: round((value / total_value) * 100, 2) for key, value in asset_dict.items()}
