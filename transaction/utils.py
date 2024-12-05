@@ -246,7 +246,13 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
     for key in rebalanced_portfolio:
         rebalanced_portfolio[key] = float(rebalanced_portfolio[key]) * float(past_sum) / 100
 
-    print("debug:", StockPrice.get_latest_price_before("VTI", add_seconds_to_date(date, 0)))
+    KS102110_WON = StockPrice.get_latest_price_before("102110.KS", date)
+    KS481430_WON = StockPrice.get_latest_price_before("481430.KS", date)
+    SPY_WON = StockPrice.get_latest_price_before("SPY", date)
+    BND_WON = StockPrice.get_latest_price_before("BND", date)
+    VTI_WON = StockPrice.get_latest_price_before("VTI", date)
+    DBC_WON = StockPrice.get_latest_price_before("DBC", date)
+    GLD_WON = StockPrice.get_latest_price_before("GLD", date)
 
     return [
         {
@@ -267,7 +273,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
             "asset_symbol": "102110.KS",
             "asset_name": "TIGER 200",
             "quantity": 1,
-            "transaction_amount": "1000.00"
+            "transaction_amount": str(KS102110_WON)
         },
         {
             "id": 2,
@@ -277,7 +283,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
             "asset_symbol": "481430.KS",
             "asset_name": "RISE 국고채10년액티브",
             "quantity": 1,
-            "transaction_amount": "1000.00"
+            "transaction_amount": str(KS481430_WON)
         },
         {
             "id": 3,
@@ -287,7 +293,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
             "asset_symbol": "SPY",
             "asset_name": "SPDR S&P 500 ETF Trust",
             "quantity": 1,
-            "transaction_amount": "728123.00"
+            "transaction_amount": str(SPY_WON)
         },
         {
             "id": 4,
@@ -297,7 +303,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
             "asset_symbol": "BND",
             "asset_name": "Vanguard Total Bond Market Index Fund",
             "quantity": 1,
-            "transaction_amount": "728123.00"
+            "transaction_amount": str(BND_WON)
         },
         {
             "id": 5,
@@ -307,7 +313,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
             "asset_symbol": "VTI",
             "asset_name": "Vanguard Total Stock Market Index Fund ETF Shares",
             "quantity": 1,
-            "transaction_amount": "728123.00"
+            "transaction_amount": str(VTI_WON)
         },
         {
             "id": 6,
@@ -317,7 +323,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
             "asset_symbol": "DBC",
             "asset_name": "Invesco DB Commodity Index Tracking Fund",
             "quantity": 1,
-            "transaction_amount": "728123.00"
+            "transaction_amount": str(DBC_WON)
         },
         {
             "id": 7,
@@ -327,6 +333,6 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
             "asset_symbol": "GLD",
             "asset_name": "SPDR Gold Shares",
             "quantity": 1,
-            "transaction_amount": "728123.00"
+            "transaction_amount": str(GLD_WON)
         },
     ]
