@@ -72,15 +72,8 @@ def calculate_asset_sum(date):
         # 가장 최근 주가 가져오기 (종가)
         ticker = data["asset_symbol"]
         try:
-            recent_data = yf.download(ticker, period="1d")
-            latest_close = float(recent_data['Close'].iloc[-1].item())
-
-            stock = yf.Ticker(ticker)
-            currency = stock.info.get("currency", "Unknown")
-            if currency == "USD":
-                total_transaction_value = float(data['quantity']) * latest_close * 1400 # 산 당시 가격이 아니라 최근 가격으로 곱해서 
-            else:
-                total_transaction_value = float(data['quantity']) * latest_close # 산 당시 가격이 아니라 최근 가격으로 곱해서 
+            latest_close = StockPrice.get_latest_price_before(ticker, timezone.now())
+            total_transaction_value = float(data['quantity']) * latest_close # 산 당시 가격이 아니라 최근 가격으로 곱해서 
         except Exception as e:
             pass
         
@@ -118,15 +111,8 @@ def calculate_asset_sum_by_name():
         
         ticker = data["asset_symbol"]
         try:
-            recent_data = yf.download(ticker, period="1d")
-            latest_close = float(recent_data['Close'].iloc[-1].item())
-
-            stock = yf.Ticker(ticker)
-            currency = stock.info.get("currency", "Unknown")
-            if currency == "USD":
-                total_transaction_value = float(data['quantity']) * latest_close * 1400 # 산 당시 가격이 아니라 최근 가격으로 곱해서 
-            else:
-                total_transaction_value = float(data['quantity']) * latest_close # 산 당시 가격이 아니라 최근 가격으로 곱해서 
+            latest_close = StockPrice.get_latest_price_before(ticker, timezone.now())
+            total_transaction_value = float(data['quantity']) * latest_close # 산 당시 가격이 아니라 최근 가격으로 곱해서 
         except Exception as e:
             pass
         
@@ -197,15 +183,8 @@ def get_asset_totals(all_data):
         # 가장 최근 주가 가져오기 (종가)
         ticker = data["asset_symbol"]
         try:
-            recent_data = yf.download(ticker, period="1d")
-            latest_close = float(recent_data['Close'].iloc[-1].item())
-
-            stock = yf.Ticker(ticker)
-            currency = stock.info.get("currency", "Unknown")
-            if currency == "USD":
-                total_transaction_value = float(data['quantity']) * latest_close * 1400 # 산 당시 가격이 아니라 최근 가격으로 곱해서 
-            else:
-                total_transaction_value = float(data['quantity']) * latest_close # 산 당시 가격이 아니라 최근 가격으로 곱해서 
+            latest_close = StockPrice.get_latest_price_before(ticker, timezone.now())
+            total_transaction_value = float(data['quantity']) * latest_close # 산 당시 가격이 아니라 최근 가격으로 곱해서 
         except Exception as e:
             pass
         
