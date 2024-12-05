@@ -2,7 +2,8 @@
 from .models import Transaction
 import yfinance as yf
 from decimal import Decimal
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
+from django.utils import timezone
 
 from market_data.models import StockPrice
 
