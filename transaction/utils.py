@@ -227,4 +227,86 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
     past_sum = sum(past_portfolio.values())
     for key in rebalanced_portfolio:
         rebalanced_portfolio[key] = float(rebalanced_portfolio[key]) * float(past_sum) / 100
-    return rebalanced_portfolio
+
+    return [
+        {
+            "id": 0,
+            "transaction_date": "2023-01-01T11:24:00Z",
+            "transaction_type": "deposit",
+            "asset_category": "cash",
+            "asset_symbol": "",
+            "asset_name": "",
+            "quantity": 0,
+            "transaction_amount": str(past_sum)
+        },
+        {
+            "id": 1,
+            "transaction_date": "2024-11-18T03:23:00Z",
+            "transaction_type": "buy",
+            "asset_category": "korean_stock",
+            "asset_symbol": "102110.KS",
+            "asset_name": "TIGER 200",
+            "quantity": 1,
+            "transaction_amount": "1000.00"
+        },
+        {
+            "id": 2,
+            "transaction_date": "2024-11-18T03:23:00Z",
+            "transaction_type": "buy",
+            "asset_category": "korean_stock",
+            "asset_symbol": "481430.KS",
+            "asset_name": "RISE 국고채10년액티브",
+            "quantity": 1,
+            "transaction_amount": "1000.00"
+        },
+        {
+            "id": 3,
+            "transaction_date": "2024-07-30T11:27:00Z",
+            "transaction_type": "buy",
+            "asset_category": "american_stock",
+            "asset_symbol": "SPY",
+            "asset_name": "SPDR S&P 500 ETF Trust",
+            "quantity": 1,
+            "transaction_amount": "728123.00"
+        },
+        {
+            "id": 4,
+            "transaction_date": "2024-07-30T11:27:00Z",
+            "transaction_type": "buy",
+            "asset_category": "american_stock",
+            "asset_symbol": "BND",
+            "asset_name": "Vanguard Total Bond Market Index Fund",
+            "quantity": 1,
+            "transaction_amount": "728123.00"
+        },
+        {
+            "id": 5,
+            "transaction_date": "2024-07-30T11:27:00Z",
+            "transaction_type": "buy",
+            "asset_category": "american_stock",
+            "asset_symbol": "VTI",
+            "asset_name": "Vanguard Total Stock Market Index Fund ETF Shares",
+            "quantity": 1,
+            "transaction_amount": "728123.00"
+        },
+        {
+            "id": 6,
+            "transaction_date": "2024-07-30T11:27:00Z",
+            "transaction_type": "buy",
+            "asset_category": "american_stock",
+            "asset_symbol": "DBC",
+            "asset_name": "Invesco DB Commodity Index Tracking Fund",
+            "quantity": 1,
+            "transaction_amount": "728123.00"
+        },
+        {
+            "id": 7,
+            "transaction_date": "2024-07-30T11:27:00Z",
+            "transaction_type": "buy",
+            "asset_category": "american_stock",
+            "asset_symbol": "GLD",
+            "asset_name": "SPDR Gold Shares",
+            "quantity": 1,
+            "transaction_amount": "728123.00"
+        },
+    ]

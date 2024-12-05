@@ -181,5 +181,6 @@ class RebalancedTransaction(APIView):
         rebalanced_portfolio = rebalance_asset(current_portfolio)
         
         return JsonResponse({
+            "message": "success",
             "data" : get_rebalanced_transaction(rebalanced_portfolio, date_obj)
         })
