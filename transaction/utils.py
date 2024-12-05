@@ -4,6 +4,8 @@ import yfinance as yf
 from decimal import Decimal
 from datetime import datetime, timedelta
 
+from market_data.models import StockPrice
+
 def rebalance_asset(portfolio):
     # sharp ratio of stock 3-Q : K=-0.07, A=1.99,   
     # sharp ratio of bond 3-Q : K=0.79, A=0.05,
@@ -236,7 +238,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
         new_date = date + timedelta(seconds=seconds)
         
         # ISO 8601 형식으로 반환
-        return new_date.strftime('%Y-%m-%dT%H:%M:%SZ')
+        return new_date
 
     filtered_data = Transaction.objects.filter(transaction_date__lte=date).values()
     past_portfolio = get_asset_totals(filtered_data)
@@ -244,10 +246,12 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
     for key in rebalanced_portfolio:
         rebalanced_portfolio[key] = float(rebalanced_portfolio[key]) * float(past_sum) / 100
 
+    print("debug:", StockPrice.get_latest_price_before("VTI", add_seconds_to_date(date, 0)))
+
     return [
         {
             "id": 0,
-            "transaction_date": add_seconds_to_date(date, 0),
+            "transaction_date": add_seconds_to_date(date, 0).strftime('%Y-%m-%dT%H:%M:%SZ'),
             "transaction_type": "deposit",
             "asset_category": "cash",
             "asset_symbol": "",
@@ -257,7 +261,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
         },
         {
             "id": 1,
-            "transaction_date": add_seconds_to_date(date, 1),
+            "transaction_date": add_seconds_to_date(date, 1).strftime('%Y-%m-%dT%H:%M:%SZ'),
             "transaction_type": "buy",
             "asset_category": "korean_stock",
             "asset_symbol": "102110.KS",
@@ -267,7 +271,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
         },
         {
             "id": 2,
-            "transaction_date": add_seconds_to_date(date, 2),
+            "transaction_date": add_seconds_to_date(date, 2).strftime('%Y-%m-%dT%H:%M:%SZ'),
             "transaction_type": "buy",
             "asset_category": "korean_stock",
             "asset_symbol": "481430.KS",
@@ -277,7 +281,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
         },
         {
             "id": 3,
-            "transaction_date": add_seconds_to_date(date, 3),
+            "transaction_date": add_seconds_to_date(date, 3).strftime('%Y-%m-%dT%H:%M:%SZ'),
             "transaction_type": "buy",
             "asset_category": "american_stock",
             "asset_symbol": "SPY",
@@ -287,7 +291,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
         },
         {
             "id": 4,
-            "transaction_date": add_seconds_to_date(date, 4),
+            "transaction_date": add_seconds_to_date(date, 4).strftime('%Y-%m-%dT%H:%M:%SZ'),
             "transaction_type": "buy",
             "asset_category": "american_stock",
             "asset_symbol": "BND",
@@ -297,7 +301,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
         },
         {
             "id": 5,
-            "transaction_date": add_seconds_to_date(date, 5),
+            "transaction_date": add_seconds_to_date(date, 5).strftime('%Y-%m-%dT%H:%M:%SZ'),
             "transaction_type": "buy",
             "asset_category": "american_stock",
             "asset_symbol": "VTI",
@@ -307,7 +311,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
         },
         {
             "id": 6,
-            "transaction_date": add_seconds_to_date(date, 6),
+            "transaction_date": add_seconds_to_date(date, 6).strftime('%Y-%m-%dT%H:%M:%SZ'),
             "transaction_type": "buy",
             "asset_category": "american_stock",
             "asset_symbol": "DBC",
@@ -317,7 +321,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
         },
         {
             "id": 7,
-            "transaction_date": add_seconds_to_date(date, 7),
+            "transaction_date": add_seconds_to_date(date, 7).strftime('%Y-%m-%dT%H:%M:%SZ'),
             "transaction_type": "buy",
             "asset_category": "american_stock",
             "asset_symbol": "GLD",

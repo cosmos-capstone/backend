@@ -80,7 +80,9 @@ class StockPrice(models.Model):
         latest_record = StockPrice.objects.filter(symbol=symbol, datetime__lt=datetime).order_by('-datetime').first()
         
         if latest_record:
-            return latest_record.close_price, latest_record.currency
+            if latest_record.currency == "USD":
+                return latest_record.close_price * 1400
+            return latest_record.close_price
         
         # Step 2: 데이터가 없을 경우 fetch_and_save_stock_data 호출
         stock = yf.Ticker(symbol)
@@ -90,7 +92,9 @@ class StockPrice(models.Model):
         latest_record = StockPrice.objects.filter(symbol=symbol, datetime__lt=datetime).order_by('-datetime').first()
         
         if latest_record:
-            return latest_record.close_price, latest_record.currency
+            if latest_record.currency == "USD":
+                return latest_record.close_price * 1400
+            return latest_record.close_price
         
         # Step 4: fetch_and_save_stock_data 호출 후에도 데이터가 없는 경우 예외 처리
         raise ValueError(f"No stock data available for symbol {symbol} before {datetime}.")
