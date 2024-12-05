@@ -71,3 +71,27 @@ class StockPrice(models.Model):
 
         StockPrice.objects.bulk_create(stock_prices)
         
+    @staticmethod
+    def get_latest_price_before(symbol, datetime):
+        """
+        symbol과 datetime을 받아서 datetime 이전의 가장 최신 close_price와 currency를 반환.
+        데이터가 없으면 fetch_and_save_stock_data(symbol)를 호출한 뒤 다시 조회.
+        """
+        # Step 1: 가장 최신 데이터 조회
+        latest_record = StockPrice.objects.filter(symbol=symbol, datetime__lt=datetime).order_by('-datetime').first()
+        
+        if latest_record:
+            return latest_record.close_price, latest_record.currency
+        
+        # Step 2: 데이터가 없을 경우 fetch_and_save_stock_data 호출
+        stock = yf.Ticker(symbol)
+        StockPrice.fetch_and_save_stock_data(stock, symbol)
+        
+        # Step 3: 다시 데이터 조회
+        latest_record = StockPrice.objects.filter(symbol=symbol, datetime__lt=datetime).order_by('-datetime').first()
+        
+        if latest_record:
+            return latest_record.close_price, latest_record.currency
+        
+        # Step 4: fetch_and_save_stock_data 호출 후에도 데이터가 없는 경우 예외 처리
+        raise ValueError(f"No stock data available for symbol {symbol} before {datetime}.")
