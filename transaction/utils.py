@@ -247,7 +247,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
         rebalanced_portfolio[key] = float(rebalanced_portfolio[key]) * float(past_sum) / 100
 
     KS102110_WON = StockPrice.get_latest_price_before("102110.KS", date)
-    KS481430_WON = StockPrice.get_latest_price_before("481430.KS", date)
+    KS148070_WON = StockPrice.get_latest_price_before("148070.KS", date)
     SPY_WON = StockPrice.get_latest_price_before("SPY", date)
     BND_WON = StockPrice.get_latest_price_before("BND", date)
     VTI_WON = StockPrice.get_latest_price_before("VTI", date)
@@ -280,10 +280,10 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
             "transaction_date": add_seconds_to_date(date, 2).strftime('%Y-%m-%dT%H:%M:%SZ'),
             "transaction_type": "buy",
             "asset_category": "korean_stock",
-            "asset_symbol": "481430.KS",
-            "asset_name": "RISE 국고채10년액티브",
+            "asset_symbol": "148070.KS",
+            "asset_name": "KOSEF 국고채10년",
             "quantity": 1,
-            "transaction_amount": str(KS481430_WON)
+            "transaction_amount": str(KS148070_WON)
         },
         {
             "id": 3,
