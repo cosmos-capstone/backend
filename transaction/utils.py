@@ -119,10 +119,10 @@ def calculate_asset_sum_by_name():
         # deposit과 withdrawal의 경우 asset_name이 없으므로 cash에만 반영
         if data['transaction_type'] == 'deposit':
             asset_dict['cash'] = asset_dict.get('cash', {'rate': 0, 'sector': 'N/A', 'industry': 'N/A'})
-            asset_dict['cash']['rate'] += total_cash_value
+            asset_dict['cash']['rate'] = float(asset_dict['cash']['rate']) + float(total_cash_value)
         elif data['transaction_type'] == 'withdrawal':
             asset_dict['cash'] = asset_dict.get('cash', {'rate': 0, 'sector': 'N/A', 'industry': 'N/A'})
-            asset_dict['cash']['rate'] -= total_cash_value
+            asset_dict['cash']['rate'] = float(asset_dict['cash']['rate']) - float(total_cash_value)
         else:
             # buy와 sell의 경우 asset_name을 기반으로 자산 관리
             asset_name = data['asset_name']
