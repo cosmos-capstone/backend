@@ -2,6 +2,7 @@
 from .models import Transaction
 import yfinance as yf
 from decimal import Decimal
+from datetime import datetime, timedelta
 
 def rebalance_asset(portfolio):
     # sharp ratio of stock 3-Q : K=-0.07, A=1.99,   
@@ -222,6 +223,21 @@ def get_asset_totals(all_data):
     return asset_dict
 
 def get_rebalanced_transaction(rebalanced_portfolio, date):
+    def add_seconds_to_date(date, seconds):
+        """
+        date: datetime 객체 또는 ISO 8601 문자열 (예: '2023-01-01T10:00:00Z').
+        seconds: 초 단위로 추가할 시간.
+        """
+        if isinstance(date, str):
+            # ISO 8601 문자열이라면 datetime 객체로 변환
+            date = datetime.fromisoformat(date.replace("Z", "+00:00"))
+        
+        # 초 단위 시간 추가
+        new_date = date + timedelta(seconds=seconds)
+        
+        # ISO 8601 형식으로 반환
+        return new_date.strftime('%Y-%m-%dT%H:%M:%SZ')
+
     filtered_data = Transaction.objects.filter(transaction_date__lte=date).values()
     past_portfolio = get_asset_totals(filtered_data)
     past_sum = sum(past_portfolio.values())
@@ -231,7 +247,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
     return [
         {
             "id": 0,
-            "transaction_date": "2023-01-01T11:24:00Z",
+            "transaction_date": add_seconds_to_date(date, 0),
             "transaction_type": "deposit",
             "asset_category": "cash",
             "asset_symbol": "",
@@ -241,7 +257,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
         },
         {
             "id": 1,
-            "transaction_date": "2024-11-18T03:23:00Z",
+            "transaction_date": add_seconds_to_date(date, 1),
             "transaction_type": "buy",
             "asset_category": "korean_stock",
             "asset_symbol": "102110.KS",
@@ -251,7 +267,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
         },
         {
             "id": 2,
-            "transaction_date": "2024-11-18T03:23:00Z",
+            "transaction_date": add_seconds_to_date(date, 2),
             "transaction_type": "buy",
             "asset_category": "korean_stock",
             "asset_symbol": "481430.KS",
@@ -261,7 +277,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
         },
         {
             "id": 3,
-            "transaction_date": "2024-07-30T11:27:00Z",
+            "transaction_date": add_seconds_to_date(date, 3),
             "transaction_type": "buy",
             "asset_category": "american_stock",
             "asset_symbol": "SPY",
@@ -271,7 +287,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
         },
         {
             "id": 4,
-            "transaction_date": "2024-07-30T11:27:00Z",
+            "transaction_date": add_seconds_to_date(date, 4),
             "transaction_type": "buy",
             "asset_category": "american_stock",
             "asset_symbol": "BND",
@@ -281,7 +297,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
         },
         {
             "id": 5,
-            "transaction_date": "2024-07-30T11:27:00Z",
+            "transaction_date": add_seconds_to_date(date, 5),
             "transaction_type": "buy",
             "asset_category": "american_stock",
             "asset_symbol": "VTI",
@@ -291,7 +307,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
         },
         {
             "id": 6,
-            "transaction_date": "2024-07-30T11:27:00Z",
+            "transaction_date": add_seconds_to_date(date, 6),
             "transaction_type": "buy",
             "asset_category": "american_stock",
             "asset_symbol": "DBC",
@@ -301,7 +317,7 @@ def get_rebalanced_transaction(rebalanced_portfolio, date):
         },
         {
             "id": 7,
-            "transaction_date": "2024-07-30T11:27:00Z",
+            "transaction_date": add_seconds_to_date(date, 7),
             "transaction_type": "buy",
             "asset_category": "american_stock",
             "asset_symbol": "GLD",
