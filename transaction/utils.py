@@ -145,11 +145,11 @@ def calculate_asset_sum_by_name():
             if data['transaction_type'] == 'buy':
                 asset_dict[asset_name]['rate'] += total_transaction_value
                 asset_dict['cash'] = asset_dict.get('cash', {'rate': 0, 'sector': 'N/A', 'industry': 'N/A'})
-                asset_dict['cash']['rate'] -= total_transaction_value
+                asset_dict['cash']['rate'] = float(asset_dict['cash']['rate']) - total_transaction_value
             elif data['transaction_type'] == 'sell':
                 asset_dict[asset_name]['rate'] -= total_transaction_value
                 asset_dict['cash'] = asset_dict.get('cash', {'rate': 0, 'sector': 'N/A', 'industry': 'N/A'})
-                asset_dict['cash']['rate'] += total_transaction_value
+                asset_dict['cash']['rate'] = float(asset_dict['cash']['rate']) + total_transaction_value
 
     # 음수 값을 0으로 설정하고 총합 계산
     asset_dict = {key: {'rate': max(0.0, float(value['rate'])), 'sector': value['sector'], 'industry': value['industry']}
